@@ -40,3 +40,8 @@ function generirajPodatke(stPacienta) {
 
 
 // TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
+$("#test").click(function() {
+   // $.ajax({ url: 'http://emedicine.medscape.com/article/2172054-overview', success: function(data) { alert(data); } });
+    alert("ahahah");
+    console.log("lol");
+});
