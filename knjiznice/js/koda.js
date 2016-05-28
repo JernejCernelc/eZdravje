@@ -1,4 +1,3 @@
-
 var baseUrl = 'https://rest.ehrscape.com/rest/v1';
 var queryUrl = baseUrl + '/query';
 
@@ -38,10 +37,30 @@ function generirajPodatke(stPacienta) {
   return ehrId;
 }
 
-
 // TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
-$("#test").click(function() {
-   // $.ajax({ url: 'http://emedicine.medscape.com/article/2172054-overview', success: function(data) { alert(data); } });
-    alert("ahahah");
-    console.log("lol");
+
+$(document).ready(function(){
+    //var vsebina = [];
+    $("#testic").click(function() {
+        $.ajax({
+            url: "http://echo.jsontest.com/key/value?callback=?",
+            type: "GET",
+            dataType: "html",
+            //jsonp: "jsonp",
+            success: function(response) {
+                console.log(response);
+                //$(".row").append(response[0].name);
+            }
+            
+        });
+        
+        /*$.getJSON("http://echo.jsontest.com/key/value?callback=parseResponse", function(result){
+           //response data are now in the result variable
+           alert(result);
+        });*/
+       // $("p").load("http://www.who.int/features/qa/82/en/");
+       
+    });
 });
+
+
