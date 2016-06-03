@@ -268,9 +268,6 @@ function preberiEHRodBolnika() {
     }
 }
 
-
-// TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
-
 $(document).ready(function start(){
     izrisiGraf(1);
     $("#preberiObstojeciEHR").change(function(){
