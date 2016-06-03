@@ -72,7 +72,6 @@ function kreirajEHRzaBolnika(ime, priimek, datumRojstva, spol) {
     });
 
 }
-//vzorcni pacienti
 var _prvi = {
     ime: "Nejko",
     priimek: "Moknik",
@@ -272,7 +271,7 @@ function preberiEHRodBolnika() {
 
 // TODO: Tukaj implementirate funkcionalnost, ki jo podpira vaša aplikacija
 
-$(document).ready(function(){
+$(document).ready(function start(){
     izrisiGraf(1);
     $("#preberiObstojeciEHR").change(function(){
         $("#vpisiEhrId").val($(this).val());
@@ -281,7 +280,7 @@ $(document).ready(function(){
         type: "GET",
         url: "https://sl.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=Bazalna_presnova&callback=?",
         async: false,
-        dataType: "json",
+        dataType: "jsonp",
         //jsonp: "jsonp",
         success: function(data, status, jqXHR) {
            $("#wikiBesedilo").text(data.query.pages[368648].extract);
