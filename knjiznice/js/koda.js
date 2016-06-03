@@ -58,11 +58,9 @@ function kreirajEHRzaBolnika(ime, priimek, datumRojstva, spol) {
                 data: JSON.stringify(partyData),
                 success: function (party) {
                     if (party.action == 'CREATE') {
-                        console.log("uspesno kreiran ehrID");
                     }
                 },
                 error: function(err) {
-                    console.log("Napaka pri kreiranju ehrID");
                     napaka = 1;
                 }
             });
@@ -146,7 +144,6 @@ function generirajPodatke(stPacienta) {
             for(var j = 0; j <  document.getElementById("preberiObstojeciEHR").options.length; j++) {
                 if(document.getElementById("preberiObstojeciEHR").item(j).text == stPacienta.ime+" "+stPacienta.priimek) {
                     ehr = document.getElementById("preberiObstojeciEHR").item(j).value;
-                    console.log(ehr);
                 }
             }
             for(var i = 1; i < 5; i++) {
@@ -233,7 +230,6 @@ function dodajMeritveVitalnihZnakov(ehrId, datumInUra, telesnaVisina, telesnaTez
         contentType: 'application/json',
         data: JSON.stringify(podatki),
         success: function (res) {
-            console.log("Uspešno posredovani podatki");
         },
         error: function(err) {
             napaka = 1;
@@ -256,7 +252,9 @@ function preberiEHRodBolnika() {
             success: function (data) {
                 var party = data.party;
                 $("#imePacienta").text(party.firstNames + " " + party.lastNames);
-                $("#gender").text("spol: "+ party.gender.toLowerCase());
+                if(party.gender) {
+                    $("#gender").text("spol: "+ party.gender.toLowerCase());
+                }
                 var datum = party.dateOfBirth;
                 var trenutnoLeto = new Date().getFullYear();
                 starost = trenutnoLeto - parseInt(datum.substring(0, 4));
@@ -291,7 +289,7 @@ $(document).ready(function(){
     });
 
     $("#submit").click(function(){
-            trenutniEHR = $("#preberiObstojeciEHR").val();
+            trenutniEHR = $("#vpisiEhrId").val();
             preberiEHRodBolnika();
             preberiMeritveVitalnihZnakov();
             var opcija = 1;
@@ -306,7 +304,6 @@ $(document).ready(function(){
             setTimeout(function(){
                 izrisiGraf(opcija);
             }, 1000);
-            //$("#vpisiEhrId").val("");
     });
 
     $("#refresh").click(function(){
@@ -327,6 +324,7 @@ $(document).ready(function(){
 });
 
 function izrisiGraf(opcija) {
+    $("#grafPrikazi").html("<canvas id=\"graf\" width=\"400\" height=\"400\"></canvas>");
     var ctx = $("#graf");
     var datumi = [];
     var tabelaBMR = [];
@@ -338,9 +336,13 @@ function izrisiGraf(opcija) {
         if($("#spol").text == "spol: male") {
             bmr = 10*podatkiTeza[i].weight + 6.25 * podatkiVisina[i].height - 5*starostTrenutna + 5;
         }
+        else if ($("#spol").text == "") {
+            bmr = 10*podatkiTeza[i].weight + 6.25 * podatkiVisina[i].height - 5*starostTrenutna - 77;
+        }
         else {
             bmr = 10*podatkiTeza[i].weight + 6.25 * podatkiVisina[i].height - 5*starostTrenutna - 161;
         }
+        tabelaBMR.push(bmr);
         var x = document.getElementById("mycheck").checked;
         if(x == true && parseFloat(opcija) != 1) {
             tabelaSMR.push(bmr*parseFloat(opcija));
@@ -349,7 +351,6 @@ function izrisiGraf(opcija) {
         else {
             maksimum = Math.round(tabelaBMR[0]+20);
         }
-        tabelaBMR.push(bmr);
     }
     datumi.reverse();
     tabelaBMR.reverse();
@@ -412,11 +413,11 @@ function preberiMeritveVitalnihZnakov() {
                             podatkiVisina.push(res[i]);
                         }
                     } else {
-                        $("#napakaPriBranjuEhr").html("Napaka, ni podatkov.");
+                        $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka, ni podatkov.</p></div>");
                     }
                 },
                 error: function() {
-                    $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka " + JSON.parse(err.responseText).userMessage + "!</p></div>");
+                    $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka, ni dostopa.</p></div>");
                 }
             });
             $.ajax({
@@ -429,16 +430,16 @@ function preberiMeritveVitalnihZnakov() {
                             podatkiTeza.push(res[i]);
                         }
                     } else {
-                        $("#napakaPriBranjuEhr").html("Napaka, ni podatkov.");
+                        $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka, ni podatkov.</p></div>");
                     }
                 },
                 error: function() {
-                    $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka " + JSON.parse(err.responseText).userMessage + "!</p></div>");
+                    $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka, ni dostopa.</p></div>");
                 }
             });
         },
         error: function(err) {
-            $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka " + JSON.parse(err.responseText).userMessage + "!</p></div>");
+            $("#napakaPriBranjuEhr").html("<div class=\"alert alert-danger\" role=\"alert\"><p>Napaka, ni dostopa.</p></div>");
         }
     });
 }
